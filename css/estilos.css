@@ -1,0 +1,767 @@
+/* =======================================================
+   ESTILOS GENERALES Y DISEÑO DE INTERFAZ "SOLO COMPU"
+   Estilo Oscuro con Detalles en Azul Eléctrico
+   ======================================================= */
+
+/* 1. RESET Y CONFIGURACIÓN BASE */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 2. BARRA DE NAVEGACIÓN SUPERIOR (NAVBAR) - STICKY */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #1e1e1e;
+    border-bottom: 2px solid #151e3d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Logo circular del Navbar */
+.logo-container {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid #ffffff;
+}
+
+.logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.brand-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #ffffff;
+}
+
+.brand-name span {
+    color: #007bff;
+}
+
+/* Buscador central */
+.nav-center {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+
+.search-form {
+    display: flex;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    background-color: #121212;
+    border: 1px solid #757c88;
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    padding: 10px 16px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.search-btn {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 0 20px;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Enlaces y botones de acción derecha */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+.nav-link {
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #007bff;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
+}
+
+.btn-outline:hover {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.btn-solid {
+    background-color: #007bff;
+    border: 1px solid #007bff;
+    color: #ffffff;
+}
+
+.btn-solid:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* 3. DISTRIBUCIÓN ASIMÉTRICA: CONTENEDOR PRINCIPAL TIENDA */
+.store-container {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* Sidebar izquierda 280px, resto para catálogo */
+    gap: 24px;
+    max-width: 1400px;
+    margin: 24px auto;
+    padding: 0 20px;
+    min-height: calc(100vh - 180px); /* Asegura pie de página al fondo */
+}
+
+/* 4. PANEL LATERAL DE FILTROS (SIDEBAR) */
+.sidebar {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #151e3d;
+    height: fit-content;
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 8px;
+}
+
+.filter-group {
+    margin-bottom: 24px;
+}
+
+.filter-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #A0A0A0;
+}
+
+/* Estilo para checkboxes */
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.checkbox-option input[type="checkbox"] {
+    accent-color: #007bff;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Control de Precio (Range Slider estilo volumen) */
+.price-slider-container {
+    margin-top: 10px;
+}
+
+.range-slider {
+    width: 100%;
+    accent-color: #007bff;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #121212;
+    cursor: pointer;
+}
+
+.price-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    margin-top: 8px;
+    color: #757c88;
+}
+
+.current-price-val {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.btn-filter {
+    width: 100%;
+    background-color: #151e3d;
+    border: 1px solid #007bff;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.btn-filter:hover {
+    background-color: #007bff;
+}
+
+/* 5. SECCIÓN DE PRODUCTOS (CATÁLOGO GRANDE) */
+.catalog-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.catalog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.catalog-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* TARJETAS DE PRODUCTOS (CARDS) */
+.product-card {
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid #151e3d;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 123, 255, 0.15);
+}
+
+.card-img-container {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background-color: #121212;
+}
+
+.card-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .card-img-container img {
+    transform: scale(1.05);
+}
+
+.card-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-badge {
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.badge-alta {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #ff4d5a;
+    border: 1px solid #dc3545;
+}
+
+.badge-media {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+.badge-economica {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #ffffff;
+    /* truncar a 2 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.8rem;
+}
+
+.card-desc {
+    font-size: 0.85rem;
+    color: #A0A0A0;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 2.5rem;
+}
+
+.card-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #121212;
+}
+
+.card-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.btn-view {
+    background-color: #121212;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btn-view:hover {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: #A0A0A0;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid #151e3d;
+}
+
+/* 6. PÁGINA DE AUTENTICACIÓN (LOGIN & REGISTRO) - CENTRADO MEDIO CIRCULAR */
+.auth-page-bg {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #121212;
+    padding: 20px;
+}
+
+/* Cuadrado medio circular en todo el centro */
+.auth-card {
+    background-color: #1e1e1e;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 24px; /* Efecto medio circular / redondeado amplio */
+    border: 2px solid #151e3d;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 123, 255, 0.15);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #007bff;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px auto;
+    border: 2px solid #ffffff;
+}
+
+.auth-logo i {
+    font-size: 1.8rem;
+    color: #ffffff;
+}
+
+.auth-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.auth-subtitle {
+    font-size: 0.9rem;
+    color: #A0A0A0;
+    margin-top: 6px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #ffffff;
+}
+
+.form-control {
+    width: 100%;
+    background-color: #121212;
+    border: 1px solid #757c88;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.9rem;
+    color: #A0A0A0;
+}
+
+.auth-link {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.alert-error {
+    background-color: rgba(220, 53, 69, 0.15);
+    border: 1px solid #dc3545;
+    color: #ff4d5a;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.15);
+    border: 1px solid #28a745;
+    color: #2fb951;
+}
+
+/* 7. PÁGINA DE DETALLE DE PRODUCTO */
+.detail-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #A0A0A0;
+    font-weight: bold;
+    margin-bottom: 20px;
+    transition: color 0.2s ease;
+}
+
+.btn-back:hover {
+    color: #007bff;
+}
+
+.detail-card {
+    background-color: #1e1e1e;
+    border-radius: 16px;
+    border: 1px solid #151e3d;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 30px;
+}
+
+.detail-img-container {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #121212;
+    border: 1px solid #151e3d;
+    height: 380px;
+}
+
+.detail-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-category {
+    font-size: 0.85rem;
+    color: #007bff;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.detail-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.detail-meta-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.detail-badge {
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.detail-price {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #007bff;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #121212;
+    padding-bottom: 15px;
+}
+
+.detail-desc-title {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #A0A0A0;
+}
+
+.detail-desc {
+    font-size: 0.95rem;
+    color: #ffffff;
+    margin-bottom: 24px;
+    flex-grow: 1;
+}
+
+.btn-buy {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+/* 8. FOOTER ESTÁTICO CLÁSICO */
+.footer {
+    background-color: #1a1a1a;
+    border-top: 2px solid #151e3d;
+    padding: 30px 20px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer-brand {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.footer-brand span {
+    color: #007bff;
+}
+
+.footer-contact {
+    color: #A0A0A0;
+    font-size: 0.9rem;
+}
+
+.footer-rights {
+    font-size: 0.8rem;
+    color: #757c88;
+}
+
+/* 9. RESPONSIVIDAD (RESPONSIVE DESIGN) */
+@media (max-width: 900px) {
+    .store-container {
+        grid-template-columns: 1fr; /* Apilar filtros encima de productos */
+    }
+    
+    .detail-card {
+        grid-template-columns: 1fr; /* Apilar imagen de detalle encima de la info */
+    }
+    
+    .detail-img-container {
+        height: 280px;
+    }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+    }
+    
+    .nav-center {
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    .nav-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .nav-links {
+        display: none; /* Ocultar enlaces de texto sutiles para simplificar */
+    }
+    
+    .auth-card {
+        padding: 24px;
+    }
+}
