@@ -12,8 +12,17 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    rol ENUM('usuario', 'admin') NOT NULL DEFAULT 'usuario',
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
+
+-- Actualización para bases de datos creadas con una versión anterior.
+ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS rol ENUM('usuario', 'admin') NOT NULL DEFAULT 'usuario' AFTER password;
+
+UPDATE usuarios
+SET rol = 'admin'
+WHERE correo = 'quinteroadan012@gmail.com';
 
 -- 2. TABLA DE PRODUCTOS
 CREATE TABLE IF NOT EXISTS productos (

@@ -6,6 +6,9 @@
 session_start();
 require_once 'config/conexion.php';
 
+const ADMIN_CORREO = 'quinteroadan012@gmail.com';
+const ADMIN_PASSWORD = '123456789';
+
 // Si ya hay una sesión activa, redirigir a la tienda
 if (isset($_SESSION['usuario_id'])) {
     header('Location: index.php');
@@ -37,13 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Encriptar la contraseña de manera segura
                 $password_hash = password_hash($password, PASSWORD_BCRYPT);
+                $rol = ($correo === ADMIN_CORREO && $password === ADMIN_PASSWORD) ? 'admin' : 'usuario';
 
                 // Insertar el nuevo usuario en la base de datos
-                $stmt_insert = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password) VALUES (:nombre, :correo, :password)");
+                $stmt_insert = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password, rol) VALUES (:nombre, :correo, :password, :rol)");
                 $stmt_insert->execute([
                     ':nombre' => $nombre,
                     ':correo' => $correo,
-                    ':password' => $password_hash
+                    ':password' => $password_hash,
+                    ':rol' => $rol
                 ]);
 
                 $success = '¡Registro exitoso! Ya puedes iniciar sesión con tus credenciales.';

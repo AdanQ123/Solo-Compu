@@ -6,12 +6,55 @@
 session_start();
 require_once 'config/conexion.php';
 
+if (!isset($_SESSION['carrito']) || !is_array($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
+}
+
+$accionCarrito = $_POST['accion_carrito'] ?? $_GET['accion_carrito'] ?? '';
+$idCarrito = (int) ($_POST['id_producto'] ?? $_GET['id_producto'] ?? 0);
+
+if ($accionCarrito === 'agregar' && $idCarrito > 0) {
+    $stmt_carrito = $pdo->prepare('SELECT id_producto FROM productos WHERE id_producto = :id');
+    $stmt_carrito->execute([':id' => $idCarrito]);
+    if ($stmt_carrito->fetch()) {
+        $_SESSION['carrito'][$idCarrito] = ($_SESSION['carrito'][$idCarrito] ?? 0) + 1;
+    }
+    header('Location: index.php?carrito=1');
+    exit;
+}
+
+if ($accionCarrito === 'eliminar') {
+    unset($_SESSION['carrito'][$idCarrito]);
+    header('Location: index.php?carrito=1');
+    exit;
+}
+
+if ($accionCarrito === 'vaciar') {
+    $_SESSION['carrito'] = [];
+    header('Location: index.php');
+    exit;
+}
+
+if ($accionCarrito === 'actualizar' && isset($_POST['cantidad']) && is_array($_POST['cantidad'])) {
+    foreach ($_POST['cantidad'] as $id => $cantidad) {
+        $id = (int) $id;
+        $cantidad = max(0, (int) $cantidad);
+        if ($cantidad === 0) {
+            unset($_SESSION['carrito'][$id]);
+        } elseif (isset($_SESSION['carrito'][$id])) {
+            $_SESSION['carrito'][$id] = $cantidad;
+        }
+    }
+    header('Location: index.php?carrito=1');
+    exit;
+}
+
 // Inicializar variables de filtrado
 $busqueda = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
 $categorias_seleccionadas = isset($_GET['categorias']) ? $_GET['categorias'] : [];
 $calidades_seleccionadas = isset($_GET['calidades']) ? $_GET['calidades'] : [];
 $marcas_seleccionadas = isset($_GET['marcas']) ? $_GET['marcas'] : [];
-$precio_maximo = isset($_GET['precio_max']) ? intval($_GET['precio_max']) : 10000000;
+$precio_maximo = isset($_GET['precio_max']) ? intval($_GET['precio_max']) : 100000000;
 
 // Construir consulta dinámica basada en los filtros aplicados
 $query = "SELECT * FROM productos WHERE precio <= :precio_max";
@@ -71,6 +114,23 @@ try {
 } catch (Exception $e) {
     $marcas_disponibles = ['AMD', 'Intel', 'ASUS', 'Lenovo', 'HP', 'Corsair'];
 }
+
+$productosCarrito = [];
+$totalCarrito = 0;
+if ($_SESSION['carrito']) {
+    $idsCarrito = array_keys($_SESSION['carrito']);
+    $placeholdersCarrito = implode(',', array_fill(0, count($idsCarrito), '?'));
+    $stmt_carrito = $pdo->prepare("SELECT * FROM productos WHERE id_producto IN ($placeholdersCarrito)");
+    $stmt_carrito->execute($idsCarrito);
+    foreach ($stmt_carrito->fetchAll() as $productoCarrito) {
+        $productoCarrito['cantidad'] = (int) $_SESSION['carrito'][$productoCarrito['id_producto']];
+        $productoCarrito['subtotal'] = (int) $productoCarrito['precio'] * $productoCarrito['cantidad'];
+        $productosCarrito[] = $productoCarrito;
+        $totalCarrito += $productoCarrito['subtotal'];
+    }
+}
+$cantidadCarrito = array_sum($_SESSION['carrito']);
+$mostrarCarrito = isset($_GET['carrito']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -79,7 +139,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solo Compu - Tu Tienda de Hardware</title>
     <!-- CSS Propio Nativo -->
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=<?php echo filemtime(__DIR__ . '/css/estilos.css'); ?>">
 </head>
 <body>
 
@@ -93,14 +153,6 @@ try {
             <a href="index.php" class="brand-name">SOLO<span>COMPU</span></a>
         </div>
 
-        <!-- Barra de búsqueda -->
-        <div class="nav-center">
-            <form action="index.php" method="GET" class="search-form">
-                <input type="search" name="buscar" value="<?php echo htmlspecialchars($busqueda); ?>" placeholder="Buscar componentes, portátiles, PCs..." class="search-input">
-                <button type="submit" class="search-btn">Buscar</button>
-            </form>
-        </div>
-
         <!-- Acciones e Inicio de Sesión -->
         <div class="nav-right">
             <ul class="nav-links">
@@ -110,8 +162,9 @@ try {
             </ul>
 
             <div class="nav-actions">
+                <a href="index.php?carrito=1" class="nav-link cart-link <?php echo $mostrarCarrito ? 'active' : ''; ?>" title="Ver carrito"><span class="cart-icon">&#128722;</span> <span>Carrito (<?php echo $cantidadCarrito; ?>)</span></a>
                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                    <span style="font-size: 0.9rem; color: #007bff; font-weight: bold;">Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                    <span style="font-size: 0.9rem; color: #007bff; font-weight: bold;">Hola, <?php echo !empty($_SESSION['es_admin']) ? 'Admin' : htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
                     <a href="logout.php" class="btn btn-outline">Cerrar Sesión</a>
                 <?php else: ?>
                     <a href="login.php" class="btn btn-outline">Iniciar Sesión</a>
@@ -119,7 +172,45 @@ try {
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Barra de búsqueda -->
+        <div class="nav-center">
+            <form action="index.php" method="GET" class="search-form">
+                <input type="search" name="buscar" value="<?php echo htmlspecialchars($busqueda); ?>" placeholder="Buscar componentes, portátiles, PCs..." class="search-input">
+                <button type="submit" class="search-btn">Buscar</button>
+            </form>
+        </div>
+
+
+
+
     </nav>
+
+    <?php if ($mostrarCarrito): ?>
+        <section class="cart-panel">
+            <div class="cart-panel-header"><h2>Carrito de compras</h2><a href="index.php" class="cart-close" title="Cerrar carrito">&times;</a></div>
+            <?php if (!$productosCarrito): ?>
+                <p class="cart-empty">Tu carrito está vacío.</p>
+            <?php else: ?>
+                <form action="index.php" method="post">
+                    <input type="hidden" name="accion_carrito" value="actualizar">
+                    <div class="cart-list">
+                        <?php foreach ($productosCarrito as $productoCarrito): ?>
+                            <article class="cart-item">
+                                <img src="<?php echo htmlspecialchars($productoCarrito['imagen']); ?>" alt="<?php echo htmlspecialchars($productoCarrito['nombre_producto']); ?>" class="cart-item-image">
+                                <div class="cart-item-info"><h2><?php echo htmlspecialchars($productoCarrito['nombre_producto']); ?></h2><p>$<?php echo number_format($productoCarrito['precio'], 0, ',', '.'); ?> COP por unidad</p></div>
+                                <label class="cart-quantity">Cantidad<input type="number" name="cantidad[<?php echo (int) $productoCarrito['id_producto']; ?>]" min="0" value="<?php echo $productoCarrito['cantidad']; ?>"></label>
+                                <strong class="cart-subtotal">$<?php echo number_format($productoCarrito['subtotal'], 0, ',', '.'); ?> COP</strong>
+                                <a href="index.php?accion_carrito=eliminar&id_producto=<?php echo (int) $productoCarrito['id_producto']; ?>&carrito=1" class="btn btn-outline">Quitar</a>
+                            </article>
+                        <?php endforeach; ?>
+                    </div>
+                    <div class="cart-summary"><span>Total</span><strong>$<?php echo number_format($totalCarrito, 0, ',', '.'); ?> COP</strong></div>
+                    <div class="cart-actions"><button type="submit" class="btn btn-solid">Actualizar cantidades</button><button type="submit" name="accion_carrito" value="vaciar" class="btn btn-outline">Vaciar carrito</button></div>
+                </form>
+            <?php endif; ?>
+        </section>
+    <?php endif; ?>
 
     <!-- CONTENEDOR PRINCIPAL: DISTRIBUCIÓN ASIMÉTRICA -->
     <div class="store-container">
@@ -183,7 +274,7 @@ try {
                 <div class="filter-group">
                     <span class="filter-label">Precio Máximo</span>
                     <div class="price-slider-container">
-                        <input type="range" name="precio_max" min="500000" max="10000000" step="100000" value="<?php echo $precio_maximo; ?>" class="range-slider" id="priceRange">
+                        <input type="range" name="precio_max" min="500000" max="100000000" step="100000" value="<?php echo $precio_maximo; ?>" class="range-slider" id="priceRange">
                         <div class="price-values">
                             <span>$500.000 COP</span>
                             <span>$10.000.000 COP</span>
@@ -244,6 +335,11 @@ try {
                                     <span class="card-price">$<?php echo number_format($prod['precio'], 0, ',', '.'); ?> COP</span>
                                     <a href="detalle_producto.php?id=<?php echo $prod['id_producto']; ?>" class="btn-view">Ver Detalles</a>
                                 </div>
+                                <form action="index.php" method="post" class="add-cart-form">
+                                    <input type="hidden" name="accion_carrito" value="agregar">
+                                    <input type="hidden" name="id_producto" value="<?php echo (int) $prod['id_producto']; ?>">
+                                    <button type="submit" class="btn btn-solid">&#128722; Añadir al carrito</button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>

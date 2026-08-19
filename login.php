@@ -6,9 +6,9 @@
 session_start();
 require_once 'config/conexion.php';
 
-// Si ya hay una sesión activa, redirigir a la tienda
+// Si ya hay una sesión activa, conservar el destino correspondiente.
 if (isset($_SESSION['usuario_id'])) {
-    header('Location: index.php');
+    header('Location: ' . (!empty($_SESSION['es_admin']) ? 'admin.php' : 'index.php'));
     exit;
 }
 
@@ -31,13 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($usuario && password_verify($password, $usuario['password'])) {
                 // Iniciar sesión
                 $_SESSION['usuario_id'] = $usuario['id_usuario'];
-                $_SESSION['usuario_nombre'] = $usuario['nombre'];
+                $_SESSION['es_admin'] = ($usuario['rol'] === 'admin');
+                $_SESSION['usuario_nombre'] = $_SESSION['es_admin'] ? 'Admin' : $usuario['nombre'];
                 $_SESSION['usuario_correo'] = $usuario['correo'];
-                
-                header('Location: index.php');
+
+                header('Location: ' . ($_SESSION['es_admin'] ? 'admin.php' : 'index.php'));
                 exit;
-            } else {
-                $error = 'El correo electrónico o la contraseña son incorrectos.';
+            } else{
+                $error = 'No se encontro el usuario';
             }
         } catch (Exception $e) {
             $error = 'Ocurrió un error en el servidor. Inténtalo de nuevo.';

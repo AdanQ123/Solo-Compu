@@ -36,7 +36,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($producto['nombre_producto']); ?> - Solo Compu</title>
     <!-- CSS Propio Nativo -->
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilos.css?v=<?php echo filemtime(__DIR__ . '/css/estilos.css'); ?>">
 </head>
 <body>
 
@@ -57,8 +57,9 @@ try {
             </ul>
 
             <div class="nav-actions">
+                <a href="index.php?carrito=1" class="nav-link cart-link" title="Ver carrito"><span class="cart-icon">&#128722;</span> <span>Carrito</span></a>
                 <?php if (isset($_SESSION['usuario_id'])): ?>
-                    <span style="font-size: 0.9rem; color: #007bff; font-weight: bold;">Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                    <span style="font-size: 0.9rem; color: #007bff; font-weight: bold;">Hola, <?php echo !empty($_SESSION['es_admin']) ? 'Admin' : htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
                     <a href="logout.php" class="btn btn-outline">Cerrar Sesión</a>
                 <?php else: ?>
                     <a href="login.php" class="btn btn-outline">Iniciar Sesión</a>
@@ -108,9 +109,11 @@ try {
                 </div>
 
                 <!-- Botón de Acción -->
-                <button onclick="comprarProducto('<?php echo htmlspecialchars($producto['nombre_producto']); ?>')" class="btn btn-solid btn-buy">
-                    Añadir al Carrito de Compras
-                </button>
+                <form action="index.php" method="post">
+                    <input type="hidden" name="accion_carrito" value="agregar">
+                    <input type="hidden" name="id_producto" value="<?php echo (int) $producto['id_producto']; ?>">
+                    <button type="submit" class="btn btn-solid btn-buy">&#128722; Añadir al Carrito de Compras</button>
+                </form>
             </div>
         </div>
 
@@ -125,10 +128,5 @@ try {
         </div>
     </footer>
 
-    <script>
-        function comprarProducto(nombre) {
-            alert("¡Se ha añadido '" + nombre + "' a tu carrito simulado! Excelente elección.");
-        }
-    </script>
 </body>
 </html>
