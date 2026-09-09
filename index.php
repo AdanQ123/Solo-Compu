@@ -138,7 +138,7 @@ $mostrarCarrito = isset($_GET['carrito']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solo Compu - Tu Tienda de Hardware</title>
-    <!-- CSS Propio Nativo -->
+    <link rel="icon" type="img/jpg" href="IMG/icon.jpg">
     <link rel="stylesheet" href="css/estilos.css?v=<?php echo filemtime(__DIR__ . '/css/estilos.css'); ?>">
 </head>
 <body>
@@ -147,8 +147,7 @@ $mostrarCarrito = isset($_GET['carrito']);
     <nav class="navbar" id="main-nav">
         <div class="nav-left">
             <div class="logo-container">
-                <!-- Imagen de logo placeholder o sutil para la tienda -->
-                <img src="https://images.unsplash.com/photo-1547082299-de196ea013d6?w=100&auto=format&fit=crop" alt="Solo Compu Logo">
+                <img src="IMG/Solo.jpg" alt="Logo de Solo Compu">
             </div>
             <a href="index.php" class="brand-name">SOLO<span>COMPU</span></a>
         </div>
